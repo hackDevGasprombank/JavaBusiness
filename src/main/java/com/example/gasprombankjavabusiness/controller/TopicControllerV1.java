@@ -22,36 +22,37 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @WebController(BaseRoutes.TOPICS_V1)
 public class TopicControllerV1 {
 
-    @CrossOrigin("*")
+
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
         var topics = List.of(
                 new TopicResponseDto(
                         "1",
                         "Ипотека",
-                        new TopicResponseDto(
-                                "percentStats",
-                                null,
-                                null
+                        new PercentageDto(
+                                100.00,
+                                50.00,
+                                60.00
                         )
                 ),
                 new TopicResponseDto(
                         "2",
                         "Кредитные карты",
-                        new TopicResponseDto(
-                                "percentStats",
-                                null,
-                                null
+                        new PercentageDto(
+                                10.00,
+                                30.00,
+                                60.00
                         )
                 )
         );
         return ResponseEntity.ok(new ApiListResponse<>(topics, (long) topics.size()));
     }
 
-    @CrossOrigin("*")
+
     @GetMapping("{topicId}/sentiment")
     public ResponseEntity<TopicSentimentResponseDto> getTopicSentiment(
             @PathVariable String topicId,
@@ -71,7 +72,7 @@ public class TopicControllerV1 {
         ));
     }
 
-    @CrossOrigin("*")
+
     @GetMapping("{topicId}/sentiment-trend")
     public ResponseEntity<TopicSentimentTrendResponseDto> getTopicSentimentTrend(
             @PathVariable String topicId,
@@ -90,7 +91,7 @@ public class TopicControllerV1 {
         ));
     }
 
-    @CrossOrigin("*")
+
     @GetMapping("{topicId}/review-trend")
     public ResponseEntity<TopicReviewTrendResponseDto> getTopicReviewTrend(
             @PathVariable String topicId,
@@ -111,10 +112,10 @@ public class TopicControllerV1 {
         ));
     }
 
-    @CrossOrigin("*")
-    @PostMapping("/reviews")
+
+    /*@PostMapping("/reviews")
     public ResponseEntity<String> addReviews(@RequestBody String requestBody) {
         return ResponseEntity.ok("Добавлено 1 отзыв (захардкожено)");
-    }
+    }*/
 }
 
