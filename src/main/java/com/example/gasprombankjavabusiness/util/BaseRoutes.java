@@ -1,4 +1,4 @@
-package com.example.gasprombankjavabusiness.utils;
+package com.example.gasprombankjavabusiness.util;
 
 public class BaseRoutes {
     public static final String API_V1 = "/api/v1";

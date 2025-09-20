@@ -1,4 +1,4 @@
-package com.example.gasprombankjavabusiness.controllers;
+package com.example.gasprombankjavabusiness.controller;
 
 import com.example.gasprombankjavabusiness.anotions.WebController;
 import com.example.gasprombankjavabusiness.dto.PercentageDto;
@@ -10,8 +10,8 @@ import com.example.gasprombankjavabusiness.dto.response.TopicResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.TopicReviewTrendResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.TopicSentimentResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.TopicSentimentTrendResponseDto;
-import com.example.gasprombankjavabusiness.utils.ApiListResponse;
-import com.example.gasprombankjavabusiness.utils.BaseRoutes;
+import com.example.gasprombankjavabusiness.util.ApiListResponse;
+import com.example.gasprombankjavabusiness.util.BaseRoutes;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.http.ResponseEntity;

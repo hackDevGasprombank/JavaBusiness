@@ -1,4 +1,4 @@
-package com.example.gasprombankjavabusiness.utils;
+package com.example.gasprombankjavabusiness.util;
 
 import java.util.Collection;
 
