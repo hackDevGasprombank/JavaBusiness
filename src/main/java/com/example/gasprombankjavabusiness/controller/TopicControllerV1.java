@@ -15,6 +15,7 @@ import com.example.gasprombankjavabusiness.util.BaseRoutes;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @WebController(BaseRoutes.TOPICS_V1)
 public class TopicControllerV1 {
 
+    @CrossOrigin("*")
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
         var topics = List.of(
@@ -49,6 +51,7 @@ public class TopicControllerV1 {
         return ResponseEntity.ok(new ApiListResponse<>(topics, (long) topics.size()));
     }
 
+    @CrossOrigin("*")
     @GetMapping("{topicId}/sentiment")
     public ResponseEntity<TopicSentimentResponseDto> getTopicSentiment(
             @PathVariable String topicId,
@@ -68,6 +71,7 @@ public class TopicControllerV1 {
         ));
     }
 
+    @CrossOrigin("*")
     @GetMapping("{topicId}/sentiment-trend")
     public ResponseEntity<TopicSentimentTrendResponseDto> getTopicSentimentTrend(
             @PathVariable String topicId,
@@ -86,6 +90,7 @@ public class TopicControllerV1 {
         ));
     }
 
+    @CrossOrigin("*")
     @GetMapping("{topicId}/review-trend")
     public ResponseEntity<TopicReviewTrendResponseDto> getTopicReviewTrend(
             @PathVariable String topicId,
@@ -106,6 +111,7 @@ public class TopicControllerV1 {
         ));
     }
 
+    @CrossOrigin("*")
     @PostMapping("/reviews")
     public ResponseEntity<String> addReviews(@RequestBody String requestBody) {
         return ResponseEntity.ok("Добавлено 1 отзыв (захардкожено)");
