@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @WebController(BaseRoutes.TOPICS_V1)
 public class TopicControllerV1 {
 
-
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
         var topics = List.of(
