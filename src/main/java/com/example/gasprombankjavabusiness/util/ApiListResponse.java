@@ -4,7 +4,7 @@ import java.util.Collection;
 
 public record ApiListResponse<T>(
         Collection<T> result,
-        Long count
+        Long total
 ) {
 
 }

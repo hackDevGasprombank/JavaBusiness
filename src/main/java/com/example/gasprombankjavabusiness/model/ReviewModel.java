@@ -2,6 +2,8 @@ package com.example.gasprombankjavabusiness.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,13 +21,14 @@ import lombok.Setter;
 @Builder
 public class ReviewModel {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column()
     private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String text;
 
     private Integer rating;
 
