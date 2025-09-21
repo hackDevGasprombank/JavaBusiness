@@ -18,6 +18,7 @@ services:
       dockerfile: Dockerfile
     image: hack-dev-gasprom-bank-backend:dev
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
       LOG_LEVEL: debug
       POSTGRES_URL: jdbc:postgresql://database:5432/hackDevGasprombank
