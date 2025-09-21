@@ -16,27 +16,27 @@ public class ReviewControllerV1 {
     public ResponseEntity<ApiListResponse<ReviewResponseDto>> getReviews() {
         List<ReviewResponseDto> testData = List.of(
                 new ReviewResponseDto(
-                        "review-001",
+                        "1",
                         "Кредитная карта оформлена за 2 дня, условия отличные. Рекомендую!",
                         5
                 ),
                 new ReviewResponseDto(
-                        "review-002",
+                        "2",
                         "Приложение глючит, авторизация не работает. Очень разочарован.",
                         2
                 ),
                 new ReviewResponseDto(
-                        "review-003",
+                        "3",
                         "Ипотека оформлена быстро, менеджер помог с документами. Условия нормальные.",
                         4
                 ),
                 new ReviewResponseDto(
-                        "review-004",
+                        "4",
                         "Оформление вклада прошло без проблем, ставка как обещали.",
                         5
                 ),
                 new ReviewResponseDto(
-                        "review-005",
+                        "5",
                         "Поддержка отвечает долго, интерфейс устарел. Нужно обновление.",
                         1
                 )
