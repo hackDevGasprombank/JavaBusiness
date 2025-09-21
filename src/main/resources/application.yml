@@ -1,0 +1,5 @@
+spring:
+    datasource:
+      url: hackDevGasprombank
+      username: admin
+      password: admin

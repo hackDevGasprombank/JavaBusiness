@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres
+    restart: "no"
+    environment:
+      POSTGRES_DB: hackDevGasprombank
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+
+
