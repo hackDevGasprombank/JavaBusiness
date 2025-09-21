@@ -6,11 +6,14 @@ import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicReviewTrendResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentTrendResponseDto;
+import com.example.gasprombankjavabusiness.repository.TopicRepository;
+import com.example.gasprombankjavabusiness.serivce.TopicService;
 import com.example.gasprombankjavabusiness.util.ApiListResponse;
 import com.example.gasprombankjavabusiness.util.BaseRoutes;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @WebController(BaseRoutes.TOPICS_V1)
+@RequiredArgsConstructor
 public class TopicControllerV1 {
+
+    private final TopicService topicService;
+    private final TopicRepository topicRepository;
 
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
@@ -111,6 +118,7 @@ public class TopicControllerV1 {
             @RequestBody NewTopicListDto newTopics) {
 
         log.debug("new topics {}", newTopics);
+        topicService.uploadTopic(newTopics);
         return ResponseEntity.ok().build();
 
     }
