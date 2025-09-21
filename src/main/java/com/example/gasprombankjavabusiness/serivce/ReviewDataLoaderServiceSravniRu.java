@@ -3,6 +3,8 @@ package com.example.gasprombankjavabusiness.serivce;
 import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
+import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
+import com.example.gasprombankjavabusiness.util.ReviewWebSource;
 import com.example.gasprombankjavabusiness.util.mapper.ReviewMapper;
 import java.net.URI;
 import java.util.List;
@@ -19,6 +21,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
     private final ReviewRepository reviewRepository;
     private final RestClient restClient;
     private final ReviewMapper reviewMapper;
+    private final ReviewLoadPolice reviewLoadPolice;
 
     private static final String BASE_URL =
             "https://www.sravni.ru/proxy-reviews/reviews/"
@@ -30,6 +33,11 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
     @Override
     public void load() {
         try {
+            if (reviewLoadPolice.isLoaded(ReviewWebSource.SRAVNI_RU)) {
+                log.info("Отзывы с Sravni.ru уже загружены, пропускаем");
+                return;
+            }
+
             // 1. Запрос одной записи для получения общего количества
             String firstUrl = String.format(BASE_URL, 1);
             ReviewResponseDto firstResponse = restClient.get()
@@ -63,6 +71,9 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
             log.debug("Отзывы: {}", data);
 
            reviewRepository.saveAll(data.stream().map(reviewMapper::toEntity).toList());
+
+
+            reviewLoadPolice.markLoaded(ReviewWebSource.SRAVNI_RU);
 
         } catch (Exception e) {
             log.error("Ошибка загрузки отзывов", e);
