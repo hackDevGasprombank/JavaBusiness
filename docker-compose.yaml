@@ -12,11 +12,11 @@ services:
       - "5432:5432"
 
   app:
-    container_name: gasprom-bank-backend
+    container_name: hack-dev-gasprom-bank-backend
     build:
       context: .
       dockerfile: Dockerfile
-    image: gasprom-bank-backend:dev
+    image: hack-dev-gasprom-bank-backend:dev
     environment:
       SERVER_PORT: 8080
       LOG_LEVEL: debug
