@@ -3,7 +3,7 @@ version: "3.8"
 services:
   database:
     image: postgres
-    restart: "no"
+    restart: "unless-stopped"
     environment:
       POSTGRES_DB: hackDevGasprombank
       POSTGRES_USER: admin
@@ -11,4 +11,20 @@ services:
     ports:
       - "5432:5432"
 
-
+  app:
+    container_name: hack-dev-gasprom-bank-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hack-dev-gasprom-bank-backend:dev
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      LOG_LEVEL: debug
+      POSTGRES_URL: jdbc:postgresql://database:5432/hackDevGasprombank
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
