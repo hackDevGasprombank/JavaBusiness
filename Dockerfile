@@ -1,10 +1,11 @@
+
 FROM maven:latest AS stage1
 WORKDIR /app
-COPY pom.xml /app
+COPY pom.xml .
 RUN mvn dependency:resolve
-COPY src/main/java /app
-RUN mvn clean
-RUN mvn package -DskipTests
+COPY src ./src
+RUN mvn clean package -DskipTests
+
 
 FROM amazoncorretto:21 as final
 COPY --from=stage1 /app/target/*.jar app.jar
