@@ -6,20 +6,17 @@ import com.example.gasprombankjavabusiness.dto.ReviewsDto;
 import com.example.gasprombankjavabusiness.dto.SentimentDto;
 import com.example.gasprombankjavabusiness.dto.SentimentStatsDto;
 import com.example.gasprombankjavabusiness.dto.TrendDto;
-import com.example.gasprombankjavabusiness.dto.response.TopicResponseDto;
-import com.example.gasprombankjavabusiness.dto.response.TopicReviewTrendResponseDto;
-import com.example.gasprombankjavabusiness.dto.response.TopicSentimentResponseDto;
-import com.example.gasprombankjavabusiness.dto.response.TopicSentimentTrendResponseDto;
+import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
+import com.example.gasprombankjavabusiness.dto.response.topic.TopicReviewTrendResponseDto;
+import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentResponseDto;
+import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentTrendResponseDto;
 import com.example.gasprombankjavabusiness.util.ApiListResponse;
 import com.example.gasprombankjavabusiness.util.BaseRoutes;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
