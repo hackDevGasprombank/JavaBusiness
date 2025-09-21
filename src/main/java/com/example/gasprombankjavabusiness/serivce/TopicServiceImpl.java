@@ -6,6 +6,9 @@ import com.example.gasprombankjavabusiness.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
@@ -15,17 +18,19 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public void uploadTopic(NewTopicListDto topics) {
 
-        topics.topics().forEach(this::databaseSave);
+        List<TopicModel> topicModelList = new ArrayList<>();
+        for (String topicName : topics.topics()) {
+            topicModelList.add(topicNameToModel(topicName));
+        }
+        topicRepository.saveAll(topicModelList);
 
     }
 
-    private void databaseSave(String topicName) {
+    private TopicModel topicNameToModel(String topicName) {
 
-        topicRepository.save(
-                TopicModel.builder()
-                        .name(topicName)
-                        .build()
-        );
+        return TopicModel.builder()
+                .name(topicName)
+                .build();
 
     }
 }

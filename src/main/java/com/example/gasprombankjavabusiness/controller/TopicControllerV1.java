@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class TopicControllerV1 {
 
     private final TopicService topicService;
-    private final TopicRepository topicRepository;
 
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
