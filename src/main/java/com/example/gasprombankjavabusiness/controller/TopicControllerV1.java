@@ -1,27 +1,30 @@
 package com.example.gasprombankjavabusiness.controller;
 
 import com.example.gasprombankjavabusiness.anotions.WebController;
-import com.example.gasprombankjavabusiness.dto.PercentageDto;
-import com.example.gasprombankjavabusiness.dto.ReviewsDto;
-import com.example.gasprombankjavabusiness.dto.SentimentDto;
-import com.example.gasprombankjavabusiness.dto.SentimentStatsDto;
-import com.example.gasprombankjavabusiness.dto.TrendDto;
+import com.example.gasprombankjavabusiness.dto.*;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicReviewTrendResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentTrendResponseDto;
+import com.example.gasprombankjavabusiness.repository.TopicRepository;
+import com.example.gasprombankjavabusiness.serivce.TopicService;
 import com.example.gasprombankjavabusiness.util.ApiListResponse;
 import com.example.gasprombankjavabusiness.util.BaseRoutes;
 import java.time.LocalDate;
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
+@Slf4j
 @WebController(BaseRoutes.TOPICS_V1)
+@RequiredArgsConstructor
 public class TopicControllerV1 {
+
+    private final TopicService topicService;
 
     @GetMapping()
     public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
@@ -106,6 +109,17 @@ public class TopicControllerV1 {
                 "Мобильное приложение",
                 reviews
         ));
+    }
+
+
+    @PostMapping()
+    public ResponseEntity<?> newTopicLoader(
+            @RequestBody NewTopicListDto newTopics) {
+
+        log.debug("new topics {}", newTopics);
+        topicService.uploadTopic(newTopics);
+        return ResponseEntity.ok().build();
+
     }
 
 
