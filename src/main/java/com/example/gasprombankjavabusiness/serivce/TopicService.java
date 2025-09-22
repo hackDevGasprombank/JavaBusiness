@@ -1,11 +1,11 @@
 package com.example.gasprombankjavabusiness.serivce;
 
-import com.example.gasprombankjavabusiness.dto.NewTopicListDto;
+import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface TopicService {
 
-    void uploadTopic(NewTopicListDto topics);
+    void uploadTopic(NewTopicListRequestDto topics);
 
 }
