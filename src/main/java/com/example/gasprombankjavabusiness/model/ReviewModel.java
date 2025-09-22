@@ -1,7 +1,10 @@
 package com.example.gasprombankjavabusiness.model;
 
+import com.example.gasprombankjavabusiness.util.WebSource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,4 +37,8 @@ public class ReviewModel {
 
     @Column(name = "review_date")
     private LocalDateTime reviewDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "web_source")
+    private WebSource webSource;
 }

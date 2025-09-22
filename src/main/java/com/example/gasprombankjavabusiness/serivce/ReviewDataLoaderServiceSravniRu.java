@@ -4,7 +4,7 @@ import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
 import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
-import com.example.gasprombankjavabusiness.util.ReviewWebSource;
+import com.example.gasprombankjavabusiness.util.WebSource;
 import com.example.gasprombankjavabusiness.util.mapper.ReviewMapper;
 import java.net.URI;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
     @Override
     public void load() {
         try {
-            if (reviewLoadPolice.isLoaded(ReviewWebSource.SRAVNI_RU)) {
+            if (reviewLoadPolice.isLoaded(WebSource.SRAVNI_RU)) {
                 log.info("Отзывы с Sravni.ru уже загружены, пропускаем");
                 return;
             }
@@ -73,7 +73,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
            reviewRepository.saveAll(data.stream().map(reviewMapper::toEntity).toList());
 
 
-            reviewLoadPolice.markLoaded(ReviewWebSource.SRAVNI_RU);
+            reviewLoadPolice.markLoaded(WebSource.SRAVNI_RU);
 
         } catch (Exception e) {
             log.error("Ошибка загрузки отзывов", e);

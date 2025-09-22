@@ -1,5 +1,6 @@
 package com.example.gasprombankjavabusiness.util;
 
-public enum ReviewWebSource {
-    SRAVNI_RU
+public enum WebSource {
+    SRAVNI_RU,
+    BANKI_RU
 }

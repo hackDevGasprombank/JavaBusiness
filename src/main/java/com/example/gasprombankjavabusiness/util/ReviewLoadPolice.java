@@ -1,6 +1,5 @@
 package com.example.gasprombankjavabusiness.util;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
@@ -8,17 +7,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewLoadPolice {
 
-    private final Map<ReviewWebSource, Integer> loadedMap = new ConcurrentHashMap<>();
+    private final Map<WebSource, Integer> loadedMap = new ConcurrentHashMap<>();
 
-    public boolean isLoaded(ReviewWebSource source) {
+    public boolean isLoaded(WebSource source) {
         return loadedMap.getOrDefault(source, 0) == 1;
     }
 
-    public void markLoaded(ReviewWebSource source) {
+    public void markLoaded(WebSource source) {
         loadedMap.put(source, 1);
     }
 
-    public void reset(ReviewWebSource source) {
+    public void reset(WebSource source) {
         loadedMap.put(source, 0);
     }
 
