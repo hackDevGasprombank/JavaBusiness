@@ -2,11 +2,11 @@ package com.example.gasprombankjavabusiness.controller;
 
 import com.example.gasprombankjavabusiness.anotions.WebController;
 import com.example.gasprombankjavabusiness.dto.*;
+import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicReviewTrendResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentTrendResponseDto;
-import com.example.gasprombankjavabusiness.repository.TopicRepository;
 import com.example.gasprombankjavabusiness.serivce.TopicService;
 import com.example.gasprombankjavabusiness.util.ApiListResponse;
 import com.example.gasprombankjavabusiness.util.BaseRoutes;
@@ -114,7 +114,7 @@ public class TopicControllerV1 {
 
     @PostMapping()
     public ResponseEntity<?> newTopicLoader(
-            @RequestBody NewTopicListDto newTopics) {
+            @RequestBody NewTopicListRequestDto newTopics) {
 
         log.debug("new topics {}", newTopics);
         topicService.uploadTopic(newTopics);
