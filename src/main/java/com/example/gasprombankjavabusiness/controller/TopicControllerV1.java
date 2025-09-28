@@ -27,7 +27,7 @@ public class TopicControllerV1 {
     private final TopicService topicService;
 
     @GetMapping()
-    public ResponseEntity<ApiListResponse<TopicResponseDto>> getTopics() {
+    public ResponseEntity<?> getTopics() {
         var topics = List.of(
                 new TopicResponseDto(
                         "1",
@@ -48,7 +48,7 @@ public class TopicControllerV1 {
                         )
                 )
         );
-        return ResponseEntity.ok(new ApiListResponse<>(topics, (long) topics.size()));
+        return ResponseEntity.ok(topics);
     }
 
 
@@ -73,20 +73,27 @@ public class TopicControllerV1 {
 
 
     @GetMapping("{topicId}/sentiment-trend")
-    public ResponseEntity<TopicSentimentTrendResponseDto> getTopicSentimentTrend(
+    public ResponseEntity<?> getTopicSentimentTrend(
             @PathVariable String topicId,
             @RequestParam(required = false) String interval,
             @RequestParam(required = false) LocalDate from,
             @RequestParam(required = false) LocalDate to) {
 
-        List<PercentageDto> janTrend = List.of(new PercentageDto(48.0, 32.0, 20.0));
+        PercentageDto janTrend = new PercentageDto(40.0, 35.0, 25.0);
+        PercentageDto febTrend = new PercentageDto(55.0, 20.0, 25.0);
+        PercentageDto marTrend = new PercentageDto(30.0, 40.0, 30.0);
+        PercentageDto aprTrend = new PercentageDto(47.0, 28.0, 25.0);
 
-        TrendDto trend = new TrendDto(LocalDate.of(2024, 1, 1), janTrend);
+        TrendDto jan = new TrendDto(LocalDate.of(2024, 1, 1), janTrend);
+        TrendDto feb = new TrendDto(LocalDate.of(2024, 2, 6), febTrend);
+        TrendDto mar = new TrendDto(LocalDate.of(2024, 3, 8), marTrend);
+        TrendDto apr = new TrendDto(LocalDate.of(2024, 4, 13), aprTrend);
+
 
         return ResponseEntity.ok(new TopicSentimentTrendResponseDto(
                 topicId,
                 "Ипотека",
-                trend
+                List.of(jan, feb, mar, apr)
         ));
     }
 
