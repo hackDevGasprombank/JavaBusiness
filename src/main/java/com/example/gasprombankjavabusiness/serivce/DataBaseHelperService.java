@@ -1,13 +1,17 @@
 package com.example.gasprombankjavabusiness.serivce;
 
-import com.example.gasprombankjavabusiness.dto.databaseHelper.ReviewDto;
-import com.example.gasprombankjavabusiness.dto.databaseHelper.ReviewResponse;
+import com.example.gasprombankjavabusiness.dto.databaseHelper.ReviewPushingDto;
+import com.example.gasprombankjavabusiness.dto.databaseHelper.TopicPushingDto;
 import com.example.gasprombankjavabusiness.model.ReviewModel;
+import com.example.gasprombankjavabusiness.model.TopicModel;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
+import com.example.gasprombankjavabusiness.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -20,48 +24,110 @@ import java.util.UUID;
 public class DataBaseHelperService {
 
     private final ReviewRepository reviewRepository;
+    private final TopicRepository topicRepository;
 
-    public void getBackup(Integer size, String url) {
+    public void startPushingBackup(Integer size, String baseUrl) {
         final RestClient restClient = RestClient.builder()
-                .baseUrl(url) // твой API
+                .baseUrl(baseUrl) // например http://server:8080/database-helper
                 .build();
 
+        pushReviews(restClient, size);
+        pushTopics(restClient, size);
+    }
+
+    private void pushReviews(RestClient restClient, int size) {
         int page = 0;
-//        int size = 1000;
         boolean hasMore = true;
 
         while (hasMore) {
-            int finalPage = page;
-            ReviewResponse response = restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/reviews")
-                            .queryParam("page", finalPage)
-                            .queryParam("size", size)
-                            .build())
-                    .retrieve()
-                    .body(ReviewResponse.class);
+            Pageable pageable = PageRequest.of(page, size, Sort.by("reviewDate").ascending().and(Sort.by("id")));
 
+            Page<ReviewModel> pageData = reviewRepository.findAll(pageable);
 
-
-            if (response == null || response.getReviews().isEmpty()) {
-                hasMore = false; // пусто => конец
-                log.info("hasMore is false. stopped");
+            if (pageData.isEmpty()) {
+                hasMore = false;
+                log.info("No more reviews. Stopped at page={}", page);
             } else {
-                // сохраняем в БД
-                List<ReviewModel> models = response.getReviews().stream()
-                        .map(this::mapToEntity)
+                List<ReviewPushingDto> dtos = pageData.getContent().stream()
+                        .map(this::mapToReviewDto)
                         .toList();
-                reviewRepository.saveAll(models);
-                log.info("page is {} saved", finalPage);
 
-                page++; // идем дальше
+                restClient.post()
+                        .uri("/database-helper/reviews")
+                        .body(dtos)
+                        .retrieve()
+                        .toBodilessEntity();
+
+                log.info("Sent {} reviews to server (page={})", dtos.size(), page);
+
+                page++;
             }
         }
     }
 
-    public ReviewModel mapToEntity(ReviewDto dto) {
+    private void pushTopics(RestClient restClient, int size) {
+        int page = 0;
+        boolean hasMore = true;
+
+        while (hasMore) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
+
+            Page<TopicModel> pageData = topicRepository.findAll(pageable);
+
+            if (pageData.isEmpty()) {
+                hasMore = false;
+                log.info("No more topics. Stopped at page={}", page);
+            } else {
+                List<TopicPushingDto> dtos = pageData.getContent().stream()
+                        .map(this::mapToTopicDto)
+                        .toList();
+
+                restClient.post()
+                        .uri("/database-helper/topics")
+                        .body(dtos)
+                        .retrieve()
+                        .toBodilessEntity();
+
+                log.info("Sent {} topics to server (page={})", dtos.size(), page);
+
+                page++;
+            }
+        }
+    }
+
+    // ====== Мапперы ======
+    private ReviewPushingDto mapToReviewDto(ReviewModel model) {
+        return ReviewPushingDto.builder()
+                .id(model.getId())
+                .title(model.getTitle())
+                .text(model.getText())
+                .rating(model.getRating())
+                .reviewDate(model.getReviewDate())
+                .webSource(model.getWebSource())
+                .build();
+    }
+
+    private TopicPushingDto mapToTopicDto(TopicModel model) {
+        return TopicPushingDto.builder()
+                .id(model.getId())
+                .name(model.getName())
+                .description(model.getDescription())
+                .build();
+    }
+
+
+    // --- Reviews ---
+    public void saveLocalReviews(List<ReviewPushingDto> dtoList) {
+        List<ReviewModel> models = dtoList.stream()
+                .map(this::mapToReviewEntity)
+                .toList();
+
+        reviewRepository.saveAll(models);
+    }
+
+    private ReviewModel mapToReviewEntity(ReviewPushingDto dto) {
         return ReviewModel.builder()
-                .id(UUID.randomUUID())
+//                .id(dto.id()) // UUID из DTO, если нужен
                 .title(dto.getTitle())
                 .text(dto.getText())
                 .rating(dto.getRating())
@@ -70,26 +136,20 @@ public class DataBaseHelperService {
                 .build();
     }
 
-    public ReviewResponse getReviews(int page, int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        List<ReviewDto> reviews = reviewRepository.findAll(pageable)
-                .map(this::mapToDto)
+    // --- Topics ---
+    public void saveLocalTopics(List<TopicPushingDto> dtoList) {
+        List<TopicModel> models = dtoList.stream()
+                .map(this::mapToTopicEntity)
                 .toList();
 
-        boolean hasMore = reviewRepository.count() > (long) (page + 1) * size;
-
-        return new ReviewResponse(reviews, hasMore);
+        topicRepository.saveAll(models);
     }
 
-    private ReviewDto mapToDto(ReviewModel model) {
-        return ReviewDto.builder()
-                .title(model.getTitle())
-                .text(model.getText())
-                .rating(model.getRating())
-                .reviewDate(model.getReviewDate())
-                .webSource(model.getWebSource())
+    private TopicModel mapToTopicEntity(TopicPushingDto dto) {
+        return TopicModel.builder()
+//                .id(dto.id())
+                .name(dto.getName())
+                .description(dto.getDescription())
                 .build();
     }
 
