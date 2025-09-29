@@ -5,7 +5,7 @@ import java.util.Collection;
 
 public record TrendDto(
         LocalDate date,
-        Collection<PercentageDto> presentTrend
+        PercentageDto persentTrend
 ) {
 }
 
