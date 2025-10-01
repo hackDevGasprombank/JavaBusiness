@@ -1,5 +1,6 @@
 package com.example.gasprombankjavabusiness.serivce;
 
+import com.example.gasprombankjavabusiness.dto.PredictionReturnFromMLListDto;
 import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
@@ -78,5 +79,20 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
         } catch (Exception e) {
             log.error("Ошибка загрузки отзывов", e);
         }
+    }
+
+    @Override
+    public void loadReview(ReviewDataSessrumnirDto dto) {
+
+        // псевдокод
+
+//        saveNewReviewList();
+
+//        var dto = createDtoReviewResponseDtoForPushML();
+
+//        PredictionReturnFromMLListDto result = pushToMLForCreateSentimentModel();
+
+//        saveReviewSentimentModelList(result);
+
     }
 }

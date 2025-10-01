@@ -2,6 +2,7 @@ package com.example.gasprombankjavabusiness.controller;
 
 
 import com.example.gasprombankjavabusiness.anotions.WebController;
+import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.dto.response.review.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.serivce.ReviewDataLoaderService;
 import com.example.gasprombankjavabusiness.util.ApiListResponse;
@@ -58,10 +59,17 @@ public class ReviewControllerV1 {
 
 
     // эндпоинт для загрузки данных
+//    @Operation(hidden = true)
+//    @PostMapping()
+//    public ResponseEntity<Void> load() {
+////        reviewDataLoaderService.load();
+//        return ResponseEntity.noContent().build();
+//    }
+
     @Operation(hidden = true)
     @PostMapping()
-    public ResponseEntity<Void> load() {
-        reviewDataLoaderService.load();
+    public ResponseEntity<Void> loadReview(ReviewDataSessrumnirDto dto) {
+        reviewDataLoaderService.loadReview(dto);
         return ResponseEntity.noContent().build();
     }
 }
