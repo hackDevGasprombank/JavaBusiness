@@ -3,6 +3,7 @@ package com.example.gasprombankjavabusiness.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,4 +23,7 @@ public class TopicModel {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @OneToMany(mappedBy = "topicId")
+    private List<ReviewSentimentModel> reviewSentimentModelList;
 }
