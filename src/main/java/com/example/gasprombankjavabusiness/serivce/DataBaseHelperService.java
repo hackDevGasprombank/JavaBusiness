@@ -98,7 +98,7 @@ public class DataBaseHelperService {
     // ====== Мапперы ======
     private ReviewPushingDto mapToReviewDto(ReviewModel model) {
         return ReviewPushingDto.builder()
-                .id(model.getId())
+                .id(model.getId().toString())
                 .title(model.getTitle())
                 .text(model.getText())
                 .rating(model.getRating())
@@ -109,7 +109,7 @@ public class DataBaseHelperService {
 
     private TopicPushingDto mapToTopicDto(TopicModel model) {
         return TopicPushingDto.builder()
-                .id(model.getId())
+                .id(model.getId().toString())
                 .name(model.getName())
                 .description(model.getDescription())
                 .build();

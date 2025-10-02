@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class TopicPushingDto {
-    private UUID id;
+    private String id;
     private String name;
     private String description;
 }

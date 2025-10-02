@@ -3,7 +3,10 @@ package com.example.gasprombankjavabusiness.repository;
 import com.example.gasprombankjavabusiness.model.TopicModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
-public interface TopicRepository extends JpaRepository<TopicModel, UUID> {
+public interface TopicRepository extends JpaRepository<TopicModel, Long> {
+    Optional<TopicModel> findByName(String name);
+
 }

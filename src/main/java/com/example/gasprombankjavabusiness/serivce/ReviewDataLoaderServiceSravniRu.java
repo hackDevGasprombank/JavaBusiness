@@ -1,22 +1,23 @@
 package com.example.gasprombankjavabusiness.serivce;
 
-import com.example.gasprombankjavabusiness.dto.DataForPushMLDto;
-import com.example.gasprombankjavabusiness.dto.PredictionReturnFromMLListDto;
-import com.example.gasprombankjavabusiness.dto.ReviewRequestForPushMLDto;
-import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
+import com.example.gasprombankjavabusiness.config.ApiConfig;
+import com.example.gasprombankjavabusiness.dto.*;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.model.ReviewModel;
+import com.example.gasprombankjavabusiness.model.ReviewSentimentModel;
+import com.example.gasprombankjavabusiness.model.TopicModel;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
+import com.example.gasprombankjavabusiness.repository.TopicRepository;
 import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
 import com.example.gasprombankjavabusiness.util.WebSource;
 import com.example.gasprombankjavabusiness.util.mapper.ReviewMapper;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+
+import java.net.URI;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
     private final RestClient restClient;
     private final ReviewMapper reviewMapper;
     private final ReviewLoadPolice reviewLoadPolice;
+    private final TopicRepository topicRepository;
 
     private static final String BASE_URL =
             "https://www.sravni.ru/proxy-reviews/reviews/"
@@ -75,7 +77,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
             log.info("Загружено {} отзывов из {}", data.size(), total);
             log.debug("Отзывы: {}", data);
 
-           reviewRepository.saveAll(data.stream().map(reviewMapper::toEntity).toList());
+            reviewRepository.saveAll(data.stream().map(reviewMapper::toEntity).toList());
 
 
             reviewLoadPolice.markLoaded(WebSource.SRAVNI_RU);
@@ -104,17 +106,106 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
 
         ReviewRequestForPushMLDto requestDto = createReviewRequestForPushMLDto(dto);
 
-//        PredictionReturnFromMLListDto result = pushToMLForCreateSentimentModel();
+        PredictionReturnFromMLListDto result = pushToMLForCreateSentimentModel(
+                requestDto
+        );
 
-//        saveReviewSentimentModelList(result);
+        saveReviewSentimentModelList(result);
 
     }
+
+    private void saveReviewSentimentModelList(PredictionReturnFromMLListDto result) {
+        if (result == null || result.getPredictions() == null) {
+            log.warn("Пустой результат от ML — сохранять нечего");
+            return;
+        }
+
+        for (PredictionReturnFromMLDto prediction : result.getPredictions()) {
+            ReviewModel review = reviewRepository.findById(prediction.getId())
+                    .orElse(null);
+
+            if (review == null) {
+                log.warn("Не найден отзыв с id={}, пропускаем", prediction.getId());
+                continue;
+            }
+
+            List<ReviewSentimentModel> sentimentModels =
+                    buildSentimentModels(review, prediction);
+
+            // сохраняем через review — каскад всё протолкнёт
+            review.getReviewSentimentModelList().addAll(sentimentModels);
+            reviewRepository.save(review);
+        }
+
+        log.info("Сохранены результаты анализа для {} отзывов",
+                result.getPredictions().size());
+    }
+
+    private List<ReviewSentimentModel> buildSentimentModels(
+            ReviewModel review, PredictionReturnFromMLDto prediction) {
+
+        List<ReviewSentimentModel> list = new java.util.ArrayList<>();
+
+        List<String> topics = prediction.getTopics();
+        List<String> sentiments = prediction.getSentiments();
+
+        for (int i = 0; i < topics.size(); i++) {
+            String topicName = topics.get(i);
+            String sentiment = sentiments.size() > i ? sentiments.get(i) : null;
+
+            // Находим топик по имени или создаём новый
+            TopicModel topic = topicRepository.findByName(topicName)
+                    .orElseGet(() -> topicRepository.save(
+                            TopicModel.builder()
+                                    .name(topicName)
+                                    .description("")
+                                    .build()
+                    ));
+
+            ReviewSentimentModel sentimentModel = ReviewSentimentModel.builder()
+                    .review(review)
+                    .topic(topic)
+                    .sentiment(sentiment)
+                    .build();
+
+            list.add(sentimentModel);
+        }
+
+        return list;
+    }
+
+
+    private PredictionReturnFromMLListDto pushToMLForCreateSentimentModel(ReviewRequestForPushMLDto requestDto) {
+        try {
+            final RestClient mlRestClient = RestClient.builder()
+                    .baseUrl(ApiConfig.ML_API_BASE_URL) // <-- используем ApiConfig
+                    .build();
+
+            PredictionReturnFromMLListDto response = mlRestClient.post()
+                    .uri(ApiConfig.ML_API_PREDICT_PATH) // <-- путь тоже из ApiConfig
+                    .body(requestDto)
+                    .retrieve()
+                    .body(PredictionReturnFromMLListDto.class);
+
+            if (response == null) {
+                log.warn("ML-сервис вернул пустой ответ");
+                return new PredictionReturnFromMLListDto();
+            }
+
+            log.info("Получен ответ от ML-сервиса: {}", response);
+            return response;
+
+        } catch (Exception e) {
+            log.error("Ошибка при отправке запроса в ML-сервис", e);
+            return new PredictionReturnFromMLListDto();
+        }
+    }
+
 
     private ReviewRequestForPushMLDto createReviewRequestForPushMLDto(List<ReviewDataSessrumnirDto> dto) {
         try {
             List<DataForPushMLDto> mapped = dto.stream()
                     .map(item -> {
-
 
 //                        DataForPushMLDto d = new DataForPushMLDto();
 //                        d.getId() = item.id() != null ? Integer.valueOf(item.id()) : null;

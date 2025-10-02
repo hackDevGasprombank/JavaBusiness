@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class ReviewPushingDto {
-    private UUID id;
+    private String id;
     private String title;
     private String text;
     private Integer rating;
