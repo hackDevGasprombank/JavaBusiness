@@ -18,10 +18,10 @@ import java.util.UUID;
 public class ReviewSentimentModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private UUID reviewId;
-    private UUID topicId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long reviewId;
+    private Long topicId;
 
     private String sentiment;
 

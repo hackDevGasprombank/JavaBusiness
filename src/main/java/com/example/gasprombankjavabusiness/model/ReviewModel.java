@@ -20,8 +20,8 @@ import lombok.Setter;
 @Builder
 public class ReviewModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column()
     private String title;

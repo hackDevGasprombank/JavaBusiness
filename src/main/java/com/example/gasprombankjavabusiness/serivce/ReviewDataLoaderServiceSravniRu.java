@@ -1,6 +1,8 @@
 package com.example.gasprombankjavabusiness.serivce;
 
+import com.example.gasprombankjavabusiness.dto.DataForPushMLDto;
 import com.example.gasprombankjavabusiness.dto.PredictionReturnFromMLListDto;
+import com.example.gasprombankjavabusiness.dto.ReviewRequestForPushMLDto;
 import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
 import com.example.gasprombankjavabusiness.model.ReviewModel;
@@ -100,13 +102,40 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
                         .toList()
         );
 
-//        var dto = createDtoReviewResponseDtoForPushML();
+        ReviewRequestForPushMLDto requestDto = createReviewRequestForPushMLDto(dto);
 
 //        PredictionReturnFromMLListDto result = pushToMLForCreateSentimentModel();
 
 //        saveReviewSentimentModelList(result);
 
     }
+
+    private ReviewRequestForPushMLDto createReviewRequestForPushMLDto(List<ReviewDataSessrumnirDto> dto) {
+        try {
+            List<DataForPushMLDto> mapped = dto.stream()
+                    .map(item -> {
+
+
+//                        DataForPushMLDto d = new DataForPushMLDto();
+//                        d.getId() = item.id() != null ? Integer.valueOf(item.id()) : null;
+//                        d.text = item.text();
+//                        d.rating = item.rating();
+                        return DataForPushMLDto.builder()
+
+                                .id(Integer.valueOf(item.id()))
+                                .text(item.text())
+                                .rating(item.rating())
+                                .build();
+                    })
+                    .toList();
+
+            //            result.data = mapped;
+            return new ReviewRequestForPushMLDto(mapped);
+        } catch (Exception e) {
+            return new ReviewRequestForPushMLDto();
+        }
+    }
+
 
     private void saveNewReviewList(List<ReviewModel> list) {
         reviewRepository.saveAll(list);
