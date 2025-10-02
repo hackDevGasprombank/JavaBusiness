@@ -6,6 +6,8 @@ import com.example.gasprombankjavabusiness.util.TextJsonCleaner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 @RequiredArgsConstructor
 public class ReviewMapper {
@@ -18,6 +20,7 @@ public class ReviewMapper {
                 .text(textJsonCleaner.clean(dto.text()))
                 .rating(dto.rating())
                 .reviewDate(dto.date())
+                .reviewSentimentModelList(new ArrayList<>())
                 .build();
     }
 }

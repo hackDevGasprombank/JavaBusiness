@@ -3,6 +3,7 @@ package com.example.gasprombankjavabusiness.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,6 @@ public class TopicModel {
     private String description;
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewSentimentModel> reviewSentimentModelList;
+    private List<ReviewSentimentModel> reviewSentimentModelList = new ArrayList<>();
 
 }

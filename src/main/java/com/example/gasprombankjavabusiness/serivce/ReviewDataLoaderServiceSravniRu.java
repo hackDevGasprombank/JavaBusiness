@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -92,19 +93,39 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
 
         // псевдокод
 
-        saveNewReviewList(
+        List<ReviewModel> savedReviews = saveNewReviewList(
                 dto.stream()
                         .map(d -> ReviewModel.builder()
                                 .rating(d.rating())
                                 .title(d.title())
                                 .text(d.text())
                                 .reviewDate(d.date())
+                                .reviewSentimentModelList(new ArrayList<>())
                                 .build()
                         )
                         .toList()
         );
 
-        ReviewRequestForPushMLDto requestDto = createReviewRequestForPushMLDto(dto);
+        // 2. Пересоздаем dto с актуальными id
+        List<ReviewDataSessrumnirDto> updatedDto = new ArrayList<>();
+        for (int i = 0; i < savedReviews.size(); i++) {
+            ReviewModel review = savedReviews.get(i);
+            ReviewDataSessrumnirDto original = dto.get(i);
+
+            updatedDto.add(
+                    new ReviewDataSessrumnirDto(
+                            String.valueOf(review.getId()), // берем id из БД
+                            original.title(),
+                            original.text(),
+                            original.rating(),
+                            original.date()
+                    )
+            );
+        }
+
+        // здесь поменять dto так как idшники изменятся
+
+        ReviewRequestForPushMLDto requestDto = createReviewRequestForPushMLDto(updatedDto);
 
         PredictionReturnFromMLListDto result = pushToMLForCreateSentimentModel(
                 requestDto
@@ -133,7 +154,7 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
                     buildSentimentModels(review, prediction);
 
             // сохраняем через review — каскад всё протолкнёт
-            review.getReviewSentimentModelList().addAll(sentimentModels);
+            review.getReviewSentimentModelList().addAll(sentimentModels);  //156 строка которая тегнута тем что в ней ошибка
             reviewRepository.save(review);
         }
 
@@ -215,21 +236,26 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
 
                                 .id(Integer.valueOf(item.id()))
                                 .text(item.text())
-                                .rating(item.rating())
+//                                .rating(item.rating())
                                 .build();
                     })
                     .toList();
 
             //            result.data = mapped;
+            log.info("то что отправленно в МЛ {}", mapped.toString());
             return new ReviewRequestForPushMLDto(mapped);
         } catch (Exception e) {
-            return new ReviewRequestForPushMLDto();
+            log.warn("ошибка в том что Получены не правильные review");
+            e.printStackTrace();
+            return new ReviewRequestForPushMLDto(
+                    new ArrayList<>()
+            );
         }
     }
 
 
-    private void saveNewReviewList(List<ReviewModel> list) {
-        reviewRepository.saveAll(list);
+    private List<ReviewModel> saveNewReviewList(List<ReviewModel> list) {
+        return reviewRepository.saveAll(list);
     }
 
 //    private List<ReviewModel> mapperReviewDataSessrumnirDtoToReviewModelList(List<ReviewDataSessrumnirDto> dtos) {

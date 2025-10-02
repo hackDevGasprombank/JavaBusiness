@@ -4,6 +4,7 @@ import com.example.gasprombankjavabusiness.util.WebSource;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -39,5 +40,5 @@ public class ReviewModel {
     private WebSource webSource;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewSentimentModel> reviewSentimentModelList;
+    private List<ReviewSentimentModel> reviewSentimentModelList = new ArrayList<>();
 }

@@ -1,18 +1,16 @@
 package com.example.gasprombankjavabusiness.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class DataForPushMLDto {
 
     Integer id;
     String text;
-    Integer rating;
+//    Integer rating;
 
 }

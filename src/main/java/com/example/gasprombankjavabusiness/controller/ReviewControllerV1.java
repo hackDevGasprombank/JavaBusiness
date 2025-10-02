@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @WebController(BaseRoutes.REVIEWS_V1)
 @RequiredArgsConstructor
@@ -68,7 +69,7 @@ public class ReviewControllerV1 {
 
     @Operation(hidden = true)
     @PostMapping()
-    public ResponseEntity<Void> loadReview(List<ReviewDataSessrumnirDto> dto) {
+    public ResponseEntity<Void> loadReview(@RequestBody List<ReviewDataSessrumnirDto> dto) {
         reviewDataLoaderService.loadReview(dto);
         return ResponseEntity.noContent().build();
     }
