@@ -27,27 +27,28 @@ public class TopicControllerV1 {
     private final TopicService topicService;
 
     @GetMapping()
-    public ResponseEntity<?> getTopics() {
-        var topics = List.of(
-                new TopicResponseDto(
-                        "1",
-                        "Ипотека",
-                        new PercentageDto(
-                                100.00,
-                                50.00,
-                                60.00
-                        )
-                ),
-                new TopicResponseDto(
-                        "2",
-                        "Кредитные карты",
-                        new PercentageDto(
-                                10.00,
-                                30.00,
-                                60.00
-                        )
-                )
-        );
+    public ResponseEntity<List<TopicResponseDto>> getTopics() {
+        List<TopicResponseDto> topics = topicService.getAllTopics();
+//        var topics = List.of(
+//                new TopicResponseDto(
+//                        "1",
+//                        "Ипотека",
+//                        new PercentageDto(
+//                                100.00,
+//                                50.00,
+//                                60.00
+//                        )
+//                ),
+//                new TopicResponseDto(
+//                        "2",
+//                        "Кредитные карты",
+//                        new PercentageDto(
+//                                10.00,
+//                                30.00,
+//                                60.00
+//                        )
+//                )
+//        );
         return ResponseEntity.ok(topics);
     }
 
