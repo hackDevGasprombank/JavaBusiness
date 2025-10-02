@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hackDevGasprombank
+    username: admin
+    password: admin
+
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+logging:
+  file:
+    path: application.log
