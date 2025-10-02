@@ -24,6 +24,7 @@ public class TopicModel {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @OneToMany(mappedBy = "topicId")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewSentimentModel> reviewSentimentModelList;
+
 }

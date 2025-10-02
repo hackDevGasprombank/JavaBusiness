@@ -38,6 +38,6 @@ public class ReviewModel {
     @Column(name = "web_source")
     private WebSource webSource;
 
-    @OneToMany(mappedBy = "reviewId")
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewSentimentModel> reviewSentimentModelList;
 }

@@ -1,13 +1,7 @@
 package com.example.gasprombankjavabusiness.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
-
 
 @Entity
 @Getter
@@ -20,10 +14,16 @@ public class ReviewSentimentModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long reviewId;
-    private Long topicId;
+
+    // связь с ReviewModel
+    @ManyToOne
+    @JoinColumn(name = "review_id", nullable = false)
+    private ReviewModel review;
+
+    // связь с TopicModel
+    @ManyToOne
+    @JoinColumn(name = "topic_id", nullable = false)
+    private TopicModel topic;
 
     private String sentiment;
-
-
 }
