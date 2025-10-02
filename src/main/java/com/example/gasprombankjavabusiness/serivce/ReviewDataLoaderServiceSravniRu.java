@@ -3,11 +3,13 @@ package com.example.gasprombankjavabusiness.serivce;
 import com.example.gasprombankjavabusiness.dto.PredictionReturnFromMLListDto;
 import com.example.gasprombankjavabusiness.dto.ReviewResponseDto;
 import com.example.gasprombankjavabusiness.dto.load.ReviewDataSessrumnirDto;
+import com.example.gasprombankjavabusiness.model.ReviewModel;
 import com.example.gasprombankjavabusiness.repository.ReviewRepository;
 import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
 import com.example.gasprombankjavabusiness.util.WebSource;
 import com.example.gasprombankjavabusiness.util.mapper.ReviewMapper;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,11 +84,21 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
     }
 
     @Override
-    public void loadReview(ReviewDataSessrumnirDto dto) {
+    public void loadReview(List<ReviewDataSessrumnirDto> dto) {
 
         // псевдокод
 
-//        saveNewReviewList();
+        saveNewReviewList(
+                dto.stream()
+                        .map(d -> ReviewModel.builder()
+                                .rating(d.rating())
+                                .title(d.title())
+                                .text(d.text())
+                                .reviewDate(d.date())
+                                .build()
+                        )
+                        .toList()
+        );
 
 //        var dto = createDtoReviewResponseDtoForPushML();
 
@@ -95,4 +107,44 @@ public class ReviewDataLoaderServiceSravniRu implements ReviewDataLoaderService 
 //        saveReviewSentimentModelList(result);
 
     }
+
+    private void saveNewReviewList(List<ReviewModel> list) {
+        reviewRepository.saveAll(list);
+    }
+
+//    private List<ReviewModel> mapperReviewDataSessrumnirDtoToReviewModelList(List<ReviewDataSessrumnirDto> dtos) {
+//
+//        List<ReviewModel> result = new ArrayList<>();
+//
+//        for (ReviewDataSessrumnirDto dto : dtos) {
+//
+//            result.add(
+//                    ReviewModel.builder()
+//
+//                            .text(dto.text())
+//                            .title(dto.title())
+//                            .rating(dto.rating())
+//                            .reviewDate(dto.date())
+//                            .build()
+//            );
+//
+//        }
+//
+//        return result;
+//
+//
+//
+//    }
+//
+//    public ReviewModel mapperReviewDataSessrumnirDtoToReviewModel(ReviewDataSessrumnirDto dto) {
+//
+//        return ReviewModel.builder()
+//
+//                .rating(dto.rating())
+//                .title(dto.title())
+//                .text(dto.text())
+//                .reviewDate(dto.date())
+//                .build();
+//
+//    }
 }

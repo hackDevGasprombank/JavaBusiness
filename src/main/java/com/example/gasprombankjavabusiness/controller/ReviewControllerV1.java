@@ -68,7 +68,7 @@ public class ReviewControllerV1 {
 
     @Operation(hidden = true)
     @PostMapping()
-    public ResponseEntity<Void> loadReview(ReviewDataSessrumnirDto dto) {
+    public ResponseEntity<Void> loadReview(List<ReviewDataSessrumnirDto> dto) {
         reviewDataLoaderService.loadReview(dto);
         return ResponseEntity.noContent().build();
     }
