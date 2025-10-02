@@ -3,6 +3,7 @@ package com.example.gasprombankjavabusiness.controller;
 import com.example.gasprombankjavabusiness.anotions.WebController;
 import com.example.gasprombankjavabusiness.dto.*;
 import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestDto;
+import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestMoreInfoDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicReviewTrendResponseDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicSentimentResponseDto;
@@ -129,6 +130,18 @@ public class TopicControllerV1 {
         return ResponseEntity.ok().build();
 
     }
+
+    @PostMapping("/moreInfo")
+    public ResponseEntity<?> newTopicLoaderMoreInfo(
+            @RequestBody List<NewTopicListRequestMoreInfoDto> newTopics) {
+
+        log.debug("new topics {}", newTopics);
+        topicService.uploadTopicMoreInfo(newTopics);
+        return ResponseEntity.ok().build();
+
+    }
+
+
 
 
     /*@PostMapping("/reviews")

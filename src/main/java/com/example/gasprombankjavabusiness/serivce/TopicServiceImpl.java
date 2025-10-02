@@ -3,19 +3,20 @@ package com.example.gasprombankjavabusiness.serivce;
 import com.example.gasprombankjavabusiness.dto.PercentageDto;
 import com.example.gasprombankjavabusiness.dto.TopicDto;
 import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestDto;
+import com.example.gasprombankjavabusiness.dto.request.topic.NewTopicListRequestMoreInfoDto;
 import com.example.gasprombankjavabusiness.dto.response.topic.TopicResponseDto;
 import com.example.gasprombankjavabusiness.model.ReviewSentimentModel;
 import com.example.gasprombankjavabusiness.model.TopicModel;
 import com.example.gasprombankjavabusiness.repository.TopicRepository;
+import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.example.gasprombankjavabusiness.util.ReviewLoadPolice;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,26 @@ public class TopicServiceImpl implements TopicService {
             topicModelList.add(topicNameToModel(topicName));
         }
         topicRepository.saveAll(topicModelList);
+
+    }
+
+    @Override
+    public void uploadTopicMoreInfo(List<NewTopicListRequestMoreInfoDto> topics) {
+
+
+        List<TopicModel> topicModelList = new ArrayList<>();
+        for (NewTopicListRequestMoreInfoDto topicName : topics) {
+            topicModelList.add(
+
+                    TopicModel.builder()
+                            .name(topicName.cluster_name())
+                            .description(topicName.description())
+                            .build()
+
+            );
+        }
+        topicRepository.saveAll(topicModelList);
+
 
     }
 
